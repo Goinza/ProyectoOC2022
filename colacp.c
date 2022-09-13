@@ -1,20 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "colacp.h"
 
-typedef struct cola_con_prioridad {
-    unsigned int cantidad_elementos;
-    TNodo raiz;
-} * TColaCP;
-typedef struct nodo {
-    TEntrada entrada;
-    struct nodo * padre;
-    struct nodo * hijo_izquierdo;
-    struct nodo * hijo_derecho;
-} * TNodo;
-typedef struct entrada {
-    TClave clave;
-    TValor valor;
-} * TEntrada;
+TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada)) {
+    //TO-DO
+    return NULL;
+}
 
-typedef void * TClave;
-typedef void * TValor;
+int cp_insertar(TColaCP cola, TEntrada entr) {
+    //TO-DO
+    return NULL;
+}
+
+TEntrada cp_eliminar(TColaCP cola) {
+    //TO-DO
+    return NULL;
+}
+
+int cp_cantidad(TColaCP cola) {
+    //TO-DO
+    return NULL;
+}
+
+void cp_destruir(TColaCP cola, void (*fEliminar)(TEntrada)) {
+    //TO-DO
+}
