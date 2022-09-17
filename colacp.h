@@ -5,7 +5,7 @@
 #define ELE_NULO NULL
 
 typedef struct cola_con_prioridad {
-    unsigned int cantidad_elementos;
+    int cantidad_elementos;
     TNodo raiz;
     int (*comparador)(TEntrada, TEntrada);
 } * TColaCP;

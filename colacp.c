@@ -17,31 +17,31 @@ void swap(TNodo padre, TNodo hijo) {
             padre->padre->hijo_derecho = hijo;
         }
     }
-    
-    if (padre->hijo_izquierdo == hijo) { 
+
+    if (padre->hijo_izquierdo == hijo) {
         hijo->hijo_izquierdo = padre;
         hijo->hijo_derecho = padre->hijo_derecho;
         if (padre->hijo_derecho != NULL) {
             padre->hijo_derecho->padre = hijo;
-        }        
+        }
     }
     else {
         hijo->hijo_derecho = padre;
         hijo->hijo_izquierdo = padre->hijo_izquierdo;
         if (padre->hijo_izquierdo != NULL) {
             padre->hijo_izquierdo->padre = hijo;
-        }        
+        }
     }
 
     padre->padre = hijo;
     padre->hijo_izquierdo = auxIzq;
     if (padre->hijo_izquierdo != NULL) {
         padre->hijo_izquierdo->padre = padre;
-    }    
+    }
     padre->hijo_derecho = auxDer;
     if (padre->hijo_derecho != NULL) {
         padre->hijo_derecho->padre = padre;
-    }    
+    }
 }
 
 void heapify(TNodo raiz, int (*comparador)(TEntrada, TEntrada)) {
@@ -75,9 +75,68 @@ TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada)) {
     return NULL;
 }
 
+TNodo crearNodo(TEntrada entr){
+    TNodo nuevoNodo = (struct nodo *) malloc (sizeof(struct nodo));
+    TEntrada entradaNueva = (struct entrada *) malloc (sizeof(struct entrada));
+    *entradaNueva = *entr;
+    nuevoNodo->entrada = entradaNueva;
+    nuevoNodo->hijo_izquierdo = NULL;
+    nuevoNodo->hijo_derecho = NULL;
+    return nuevoNodo;
+}
+
 int cp_insertar(TColaCP cola, TEntrada entr) {
-    //TO-DO
-    return NULL;
+    if (cola == NULL) {
+        exit(CCP_NO_INI);
+    }
+
+    if (entr == NULL){
+        return FALSE;
+    }
+
+    int posicion = FALSE;
+
+    if (cola->raiz->entrada == NULL){
+        struct entrada *entradaNueva;
+        entradaNueva = (struct entrada *) malloc(sizeof(struct entrada));
+        *entradaNueva = *entr;
+        cola->raiz->entrada = entradaNueva;
+        posicion = TRUE;
+    }
+    else{
+        TNodo nodoActual = cola->raiz;
+        TEntrada entradaMayor = entr;
+        int comparacion;
+        while(posicion == FALSE){
+            comparacion = cola->comparador(nodoActual->entrada , entradaMayor);
+            //Comparo la entradaMayor con la del nodo si la entrada del nodo es mayor las intercambio
+            if (comparacion == 1){
+            TEntrada aux;
+            *aux = *(nodoActual->entrada);
+            *(nodoActual->entrada) = *entradaMayor;
+            entradaMayor = aux;
+            }
+            //Si el hijo izquiero de la entrada actual es null incerto un hijo izquiero con la entrada
+            if (nodoActual->hijo_izquierdo == NULL){
+                nodoActual->hijo_izquierdo = crearNodo(entr);
+                posicion = TRUE;
+            }
+            //Sino incerte la entrada y el hijo derecho del nodo actual esta null incerto un hijo derecho con la entrada
+            if (posicion == FALSE && nodoActual->hijo_derecho == NULL){
+                nodoActual->hijo_derecho = crearNodo(entr);
+                posicion = TRUE;
+            }
+
+            if (posicion == FALSE)
+                if (cola->comparador(nodoActual->hijo_izquierdo->entrada , entradaMayor) == 1)
+                    nodoActual = nodoActual->hijo_izquierdo;
+                else
+                    nodoActual = nodoActual->hijo_derecho;
+
+        }
+    if (posicion == TRUE)
+        cola->cantidad_elementos++;
+    return posicion;
 }
 
 TEntrada cp_eliminar(TColaCP cola) {
