@@ -134,6 +134,7 @@ int cp_insertar(TColaCP cola, TEntrada entr) {
                     nodoActual = nodoActual->hijo_derecho;
 
         }
+    }
     if (posicion == TRUE)
         cola->cantidad_elementos++;
     return posicion;

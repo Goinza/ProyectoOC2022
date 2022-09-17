@@ -4,11 +4,14 @@
 #define POS_NULA NULL
 #define ELE_NULO NULL
 
-typedef struct cola_con_prioridad {
-    int cantidad_elementos;
-    TNodo raiz;
-    int (*comparador)(TEntrada, TEntrada);
-} * TColaCP;
+typedef void * TClave;
+typedef void * TValor;
+
+
+typedef struct entrada {
+    TClave clave;
+    TValor valor;
+} * TEntrada;
 
 typedef struct nodo {
     TEntrada entrada;
@@ -17,13 +20,11 @@ typedef struct nodo {
     struct nodo * hijo_derecho;
 } * TNodo;
 
-typedef struct entrada {
-    TClave clave;
-    TValor valor;
-} * TEntrada;
-
-typedef void * TClave;
-typedef void * TValor;
+typedef struct cola_con_prioridad {
+    int cantidad_elementos;
+    TNodo raiz;
+    int (*comparador)(TEntrada, TEntrada);
+} * TColaCP;
 
 TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada));
 
