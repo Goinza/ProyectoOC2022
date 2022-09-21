@@ -3,45 +3,9 @@
 #include "colacp.h"
 
 void swap(TNodo padre, TNodo hijo) {
-    TNodo auxIzq;
-    TNodo auxDer;
-    auxIzq = hijo->hijo_izquierdo;
-    auxDer = hijo->hijo_derecho;
-
-    hijo->padre = padre->padre;
-    if (padre->padre != NULL) {
-        if (padre->padre->hijo_izquierdo == padre) {
-            padre->padre->hijo_izquierdo = hijo;
-        }
-        else {
-            padre->padre->hijo_derecho = hijo;
-        }
-    }
-
-    if (padre->hijo_izquierdo == hijo) {
-        hijo->hijo_izquierdo = padre;
-        hijo->hijo_derecho = padre->hijo_derecho;
-        if (padre->hijo_derecho != NULL) {
-            padre->hijo_derecho->padre = hijo;
-        }
-    }
-    else {
-        hijo->hijo_derecho = padre;
-        hijo->hijo_izquierdo = padre->hijo_izquierdo;
-        if (padre->hijo_izquierdo != NULL) {
-            padre->hijo_izquierdo->padre = hijo;
-        }
-    }
-
-    padre->padre = hijo;
-    padre->hijo_izquierdo = auxIzq;
-    if (padre->hijo_izquierdo != NULL) {
-        padre->hijo_izquierdo->padre = padre;
-    }
-    padre->hijo_derecho = auxDer;
-    if (padre->hijo_derecho != NULL) {
-        padre->hijo_derecho->padre = padre;
-    }
+    TEntrada aux = padre->entrada;
+    padre->entrada = hijo->entrada;
+    hijo->entrada = aux;
 }
 
 void heapify(TNodo raiz, int (*comparador)(TEntrada, TEntrada)) {
