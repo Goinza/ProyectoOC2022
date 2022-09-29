@@ -39,69 +39,78 @@ TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada)) {
     return NULL;
 }
 
-TNodo crearNodo(TEntrada entr){
-    TNodo nuevoNodo = (struct nodo *) malloc (sizeof(struct nodo));
-    TEntrada entradaNueva = (struct entrada *) malloc (sizeof(struct entrada));
-    *entradaNueva = *entr;
-    nuevoNodo->entrada = entradaNueva;
+TNodo crearNodo(TEntrada entr, TNodo padre){
+    TNodo nuevoNodo = (TNodo) malloc(sizeof(struct nodo));
+    nuevoNodo->entrada = entr;
+    nuevoNodo->padre = padre;
     nuevoNodo->hijo_izquierdo = NULL;
     nuevoNodo->hijo_derecho = NULL;
     return nuevoNodo;
 }
 
-int cp_insertar(TColaCP cola, TEntrada entr) {
+void reordenar(TNodo nodo, int (*comparador)(TEntrada, TEntrada)){
+    int seguir = TRUE;
+    TNodo nodo_actual = nodo;
+    TNodo nodo_padre;
+
+    while (seguir == TRUE) {
+        nodo_padre = nodo_actual->padre;
+
+        if (comparador(nodo_actual -> entrada, nodo_padre -> entrada) == 1) {
+            TNodo aux = nodo_actual;
+            nodo_actual = nodo_padre;
+            nodo_padre = aux;
+        }
+        else
+            seguir = FALSE;
+        if (nodo_padre == NULL)
+            seguir = FALSE;
+    }
+}
+
+int cp_insertar(TColaCP cola, TEntrada entr){
     if (cola == NULL) {
         exit(CCP_NO_INI);
     }
 
-    if (entr == NULL){
+    if (entr == NULL) {
         return FALSE;
     }
 
-    int posicion = FALSE;
-
-    if (cola->raiz->entrada == NULL){
-        struct entrada *entradaNueva;
-        entradaNueva = (struct entrada *) malloc(sizeof(struct entrada));
-        *entradaNueva = *entr;
-        cola->raiz->entrada = entradaNueva;
-        posicion = TRUE;
+    if (cola->raiz == NULL) {
+        cola->raiz = crearNodo(entr, NULL);
     }
-    else{
-        TNodo nodoActual = cola->raiz;
-        TEntrada entradaMayor = entr;
-        int comparacion;
-        while(posicion == FALSE){
-            comparacion = cola->comparador(nodoActual->entrada , entradaMayor);
-            //Comparo la entradaMayor con la del nodo si la entrada del nodo es mayor las intercambio
-            if (comparacion == 1){
-            TEntrada aux;
-            *aux = *(nodoActual->entrada);
-            *(nodoActual->entrada) = *entradaMayor;
-            entradaMayor = aux;
-            }
-            //Si el hijo izquiero de la entrada actual es null incerto un hijo izquiero con la entrada
-            if (nodoActual->hijo_izquierdo == NULL){
-                nodoActual->hijo_izquierdo = crearNodo(entr);
-                posicion = TRUE;
-            }
-            //Sino incerte la entrada y el hijo derecho del nodo actual esta null incerto un hijo derecho con la entrada
-            if (posicion == FALSE && nodoActual->hijo_derecho == NULL){
-                nodoActual->hijo_derecho = crearNodo(entr);
-                posicion = TRUE;
-            }
+    else {
+        int direccion = 1;
+        // Numero del nodo padre de nuevo nodo
+        int cantidad_nodos = (cola-> cantidad_elementos + 1) / 2;
+        TNodo nodo_actual = cola->raiz;
 
-            if (posicion == FALSE)
-                if (cola->comparador(nodoActual->hijo_izquierdo->entrada , entradaMayor) == 1)
-                    nodoActual = nodoActual->hijo_izquierdo;
-                else
-                    nodoActual = nodoActual->hijo_derecho;
-
+        while (cantidad_nodos != 1) {
+            direccion = direccion * 10 + (cantidad_nodos % 2);
+            cantidad_nodos = cantidad_nodos / 2;
         }
+
+        while(direccion > 1) {
+            if (direccion % 10 == 1)
+                nodo_actual = nodo_actual->hijo_derecho;
+            else
+                nodo_actual = nodo_actual->hijo_izquierdo;
+            direccion = direccion / 10;
+        }
+
+        if (nodo_actual->hijo_izquierdo != NULL) {
+            nodo_actual->hijo_derecho = crearNodo(entr, nodo_actual);
+            nodo_actual = nodo_actual->hijo_derecho;
+        }
+        else {
+            nodo_actual->hijo_izquierdo = crearNodo(entr, nodo_actual);
+            nodo_actual = nodo_actual->hijo_izquierdo;
+        }
+        reordenar(nodo_actual , cola->comparador);
     }
-    if (posicion == TRUE)
-        cola->cantidad_elementos++;
-    return posicion;
+    cola->cantidad_elementos++;
+    return TRUE;
 }
 
 TEntrada cp_eliminar(TColaCP cola) {
