@@ -34,6 +34,65 @@ void heapify(TNodo raiz, int (*comparador)(TEntrada, TEntrada)) {
     }
 }
 
+/*
+Obtiene el nodo hoja que seria un nodo padre si se fuera a agregar un nuevo elemento a la cola 
+Este es la funcion que se utiliza para saber donde insertar una nueva entrada a la cola
+n es el numero de orden que se le asignaria a un nuevo nodo si se lo fuera a agregar (cantidad_elementos)
+*/
+TNodo obtener_padre_ultimo_nodo(TNodo nodo, int n) {
+    /* Find the largest power of two no greater than n. */
+    int bitIndex = 0;
+    while (1 << (bitIndex + 1) <= n) {
+        /* See if the next power of two is greater than n. */
+        bitIndex++;
+    }
+
+    /* Back off the bit index by one.  We're going to use this to find the
+     * path down.
+     */
+    bitIndex--;
+
+    /* Read off the directions to take from the bits of n. */
+    for (; bitIndex > 0; bitIndex--) {
+        int mask = (1 << bitIndex);
+        if (n & mask)
+            nodo = nodo->hijo_derecho;
+        else
+            nodo = nodo->hijo_izquierdo;
+    }
+    return nodo;
+}
+
+/*
+Obtiene el ultimo nodo hoja que fue agregado a la cola
+Esta es la funcion que se utiliza para encontrar el ultimo elemento de la cola,
+lo cual es necesario en el proceso de la funcion cp_eliminar
+n es el numero del ultimo nodo que fue agregado a la cola (cantidad_elementos)
+*/
+TNodo obtener_ultimo_nodo(TNodo nodo, int n) {
+    /* Find the largest power of two no greater than n. */
+    int bitIndex = 0;
+    while (1 << (bitIndex + 1) <= n) {
+        /* See if the next power of two is greater than n. */
+        bitIndex++;
+    }
+
+    /* Back off the bit index by one.  We're going to use this to find the
+     * path down.
+     */
+    bitIndex--;
+
+    /* Read off the directions to take from the bits of n. */
+    for (; bitIndex >= 0; bitIndex--) {
+        int mask = (1 << bitIndex);
+        if (n & mask)
+            nodo = nodo->hijo_derecho;
+        else
+            nodo = nodo->hijo_izquierdo;
+    }
+    return nodo;
+}
+
 TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada)) {
     //TO-DO
     return NULL;
@@ -122,21 +181,31 @@ TEntrada cp_eliminar(TColaCP cola) {
     }
 
     TEntrada entrada = cola->raiz->entrada;
-    TNodo ultimo = cola->raiz;
-    int found = FALSE;
-    //Asumo que si un nodo tiene un solo hijo lo tendra como hijo izquierdo
-    while (ultimo->hijo_izquierdo != NULL && found == FALSE) {
-        if (ultimo->hijo_derecho != NULL) {
-            ultimo = ultimo->hijo_derecho;
+    TNodo ultimo;   
+
+    if (cola->cantidad_elementos > 1) {
+        ultimo = obtener_ultimo_nodo(cola->raiz, cola->cantidad_elementos);
+        swap(cola->raiz, ultimo);
+        //Ahora que el elemento a eliminar es el ultimo nodo de la cola, antes de borrarlo hay que eliminar el enlace con su nodo padre
+        if (cola->cantidad_elementos % 2 == 1) {
+            //Hay cantidad impar de elementos, el ultimo nodo es un hijo derecho
+            ultimo->padre->hijo_derecho = NULL;
         }
         else {
-            ultimo = ultimo->hijo_izquierdo;
-        }
+            //Hay cantidad par de elementos, el ultimo nodo es un hijo izquierdo
+            ultimo->padre->hijo_izquierdo = NULL;
+        }  
+    }     
+    else {
+        ultimo = cola->raiz;
     }
-    free(cola->raiz);
-    cola->raiz = ultimo;
-    heapify(cola->raiz, cola->comparador);
+    
+    free(ultimo);
     cola->cantidad_elementos--;
+    if (cola->cantidad_elementos >= 2) {
+        //Solo hace faltar verificar el orden del heap si hay al menos 2 elementos
+        heapify(cola->raiz, cola->comparador);
+    }
 
     return entrada;
 }
