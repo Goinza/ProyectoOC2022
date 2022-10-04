@@ -94,8 +94,11 @@ TNodo obtener_ultimo_nodo(TNodo nodo, int n) {
 }
 
 TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada)) {
-    //TO-DO
-    return NULL;
+    TColaCP cola = (TColaCP) malloc(sizeof(struct cola_con_prioridad));
+    cola->cantidad_elementos = 0;
+    cola->comparador = f;
+    cola->raiz = NULL;
+    return cola;
 }
 
 TNodo crearNodo(TEntrada entr, TNodo padre){
