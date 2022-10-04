@@ -35,7 +35,7 @@ void heapify(TNodo raiz, int (*comparador)(TEntrada, TEntrada)) {
 }
 
 /*
-Obtiene el nodo hoja que seria un nodo padre si se fuera a agregar un nuevo elemento a la cola 
+Obtiene el nodo hoja que seria un nodo padre si se fuera a agregar un nuevo elemento a la cola
 Este es la funcion que se utiliza para saber donde insertar una nueva entrada a la cola
 n es el numero de orden que se le asignaria a un nuevo nodo si se lo fuera a agregar (cantidad_elementos)
 */
@@ -107,23 +107,13 @@ TNodo crearNodo(TEntrada entr, TNodo padre){
     return nuevoNodo;
 }
 
-void reordenar(TNodo nodo, int (*comparador)(TEntrada, TEntrada)){
-    int seguir = TRUE;
-    TNodo nodo_actual = nodo;
-    TNodo nodo_padre;
-
-    while (seguir == TRUE) {
-        nodo_padre = nodo_actual->padre;
-
-        if (comparador(nodo_actual -> entrada, nodo_padre -> entrada) == 1) {
-            TNodo aux = nodo_actual;
-            nodo_actual = nodo_padre;
-            nodo_padre = aux;
+void reordenar(TNodo nodo, int (*comparador)(TEntrada , TEntrada)){
+    // Si el nodo no es la raiz
+    if (nodo->padre != NULL) {
+        if (comparador(nodo->entrada , nodo->padre->entrada) == 1){
+                swap(nodo->padre , nodo);
+                reordenar(nodo->padre , comparador);
         }
-        else
-            seguir = FALSE;
-        if (nodo_padre == NULL)
-            seguir = FALSE;
     }
 }
 
@@ -181,7 +171,7 @@ TEntrada cp_eliminar(TColaCP cola) {
     }
 
     TEntrada entrada = cola->raiz->entrada;
-    TNodo ultimo;   
+    TNodo ultimo;
 
     if (cola->cantidad_elementos > 1) {
         ultimo = obtener_ultimo_nodo(cola->raiz, cola->cantidad_elementos);
@@ -194,12 +184,12 @@ TEntrada cp_eliminar(TColaCP cola) {
         else {
             //Hay cantidad par de elementos, el ultimo nodo es un hijo izquierdo
             ultimo->padre->hijo_izquierdo = NULL;
-        }  
-    }     
+        }
+    }
     else {
         ultimo = cola->raiz;
     }
-    
+
     free(ultimo);
     cola->cantidad_elementos--;
     if (cola->cantidad_elementos >= 2) {
@@ -218,5 +208,5 @@ int cp_cantidad(TColaCP cola) {
 }
 
 void cp_destruir(TColaCP cola, void (*fEliminar)(TEntrada)) {
-    //TO-DO
+
 }
