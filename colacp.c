@@ -101,13 +101,13 @@ TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada)) {
     return cola;
 }
 
-TNodo crearNodo(TEntrada entr, TNodo padre){
-    TNodo nuevoNodo = (TNodo) malloc(sizeof(struct nodo));
-    nuevoNodo->entrada = entr;
-    nuevoNodo->padre = padre;
-    nuevoNodo->hijo_izquierdo = NULL;
-    nuevoNodo->hijo_derecho = NULL;
-    return nuevoNodo;
+TNodo crear_nodo(TEntrada entr, TNodo padre){
+    TNodo nuevo_nodo = (TNodo) malloc(sizeof(struct nodo));
+    nuevo_nodo->entrada = entr;
+    nuevo_nodo->padre = padre;
+    nuevo_nodo->hijo_izquierdo = NULL;
+    nuevo_nodo->hijo_derecho = NULL;
+    return nuevo_nodo;
 }
 
 void reordenar(TNodo nodo, int (*comparador)(TEntrada , TEntrada)){
@@ -130,7 +130,7 @@ int cp_insertar(TColaCP cola, TEntrada entr){
     }
 
     if (cola->raiz == NULL) {
-        cola->raiz = crearNodo(entr, NULL);
+        cola->raiz = crear_nodo(entr, NULL);
     }
     else {
         int direccion = 1;
@@ -152,11 +152,11 @@ int cp_insertar(TColaCP cola, TEntrada entr){
         }
 
         if (nodo_actual->hijo_izquierdo != NULL) {
-            nodo_actual->hijo_derecho = crearNodo(entr, nodo_actual);
+            nodo_actual->hijo_derecho = crear_nodo(entr, nodo_actual);
             nodo_actual = nodo_actual->hijo_derecho;
         }
         else {
-            nodo_actual->hijo_izquierdo = crearNodo(entr, nodo_actual);
+            nodo_actual->hijo_izquierdo = crear_nodo(entr, nodo_actual);
             nodo_actual = nodo_actual->hijo_izquierdo;
         }
         reordenar(nodo_actual , cola->comparador);
@@ -211,10 +211,10 @@ int cp_cantidad(TColaCP cola) {
 }
 
 // Recorre el arbol usando el algoritmo postorden y elimina el nodo visitado
-void eliminarNodo (TNodo nodo, void (*fEliminar)(TEntrada)){
+void eliminar_nodo (TNodo nodo, void (*fEliminar)(TEntrada)){
     if (nodo != NULL){
-        postorden(nodo->hijo_izquierdo, fEliminar);
-        postorden(nodo->hijo_derecho, fEliminar);
+        eliminar_nodo(nodo->hijo_izquierdo, fEliminar);
+        eliminar_nodo(nodo->hijo_derecho, fEliminar);
         fEliminar(nodo->entrada);
         free(nodo);
     }
@@ -225,7 +225,6 @@ void cp_destruir(TColaCP cola, void (*fEliminar)(TEntrada)) {
         exit(CCP_NO_INI);
     }
 
-    eliminarNodo(cola->raiz, fEliminar);
-    cola = NULL;
+    eliminar_nodo(cola->raiz, fEliminar);
     free(cola);
 }
