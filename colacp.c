@@ -210,6 +210,22 @@ int cp_cantidad(TColaCP cola) {
     return cola->cantidad_elementos;
 }
 
-void cp_destruir(TColaCP cola, void (*fEliminar)(TEntrada)) {
+// Recorre el arbol usando el algoritmo postorden y elimina el nodo visitado
+void eliminarNodo (TNodo nodo, void (*fEliminar)(TEntrada)){
+    if (nodo != NULL){
+        postorden(nodo->hijo_izquierdo, fEliminar);
+        postorden(nodo->hijo_derecho, fEliminar);
+        fEliminar(nodo->entrada);
+        free(nodo);
+    }
+}
 
+void cp_destruir(TColaCP cola, void (*fEliminar)(TEntrada)) {
+    if (cola == NULL) {
+        exit(CCP_NO_INI);
+    }
+
+    eliminarNodo(cola->raiz, fEliminar);
+    cola = NULL;
+    free(cola);
 }
