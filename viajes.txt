@@ -1,0 +1,5 @@
+1;3
+Salliquelo;2;2
+Bahia Blanca;2;2
+Trenque Lauqen;4;0
+Carhue;0;3
