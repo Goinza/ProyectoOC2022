@@ -35,35 +35,6 @@ void heapify(TNodo raiz, int (*comparador)(TEntrada, TEntrada)) {
 }
 
 /*
-Obtiene el nodo hoja que seria un nodo padre si se fuera a agregar un nuevo elemento a la cola
-Este es la funcion que se utiliza para saber donde insertar una nueva entrada a la cola
-n es el numero de orden que se le asignaria a un nuevo nodo si se lo fuera a agregar (cantidad_elementos)
-*/
-TNodo obtener_padre_ultimo_nodo(TNodo nodo, int n) {
-    /* Find the largest power of two no greater than n. */
-    int bitIndex = 0;
-    while (1 << (bitIndex + 1) <= n) {
-        /* See if the next power of two is greater than n. */
-        bitIndex++;
-    }
-
-    /* Back off the bit index by one.  We're going to use this to find the
-     * path down.
-     */
-    bitIndex--;
-
-    /* Read off the directions to take from the bits of n. */
-    for (; bitIndex > 0; bitIndex--) {
-        int mask = (1 << bitIndex);
-        if (n & mask)
-            nodo = nodo->hijo_derecho;
-        else
-            nodo = nodo->hijo_izquierdo;
-    }
-    return nodo;
-}
-
-/*
 Obtiene el ultimo nodo hoja que fue agregado a la cola
 Esta es la funcion que se utiliza para encontrar el ultimo elemento de la cola,
 lo cual es necesario en el proceso de la funcion cp_eliminar
@@ -129,7 +100,7 @@ int cp_insertar(TColaCP cola, TEntrada entr){
         return FALSE;
     }
 
-    if (cola->raiz == NULL) {
+    if (cola->cantidad_elementos == 0) {
         cola->raiz = crear_nodo(entr, NULL);
     }
     else {
@@ -191,6 +162,7 @@ TEntrada cp_eliminar(TColaCP cola) {
     }
     else {
         ultimo = cola->raiz;
+        cola->raiz = NULL;
     }
 
     free(ultimo);
