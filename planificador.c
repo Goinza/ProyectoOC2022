@@ -137,7 +137,7 @@ int main(int argc, char *argv[]) {
     char * aux_nombre;
 
     //Decalor variable para la cola
-    TColaCP cola;
+    TColaCP cola = NULL;
 
     //Abro archivo para lectura
     FILE * file;
@@ -198,7 +198,8 @@ int main(int argc, char *argv[]) {
             case 4:
                 free(ciudades);
                 free(str);
-                cp_destruir(cola, eliminar_entrada_ciudad);
+                if (cola != NULL)
+                    cp_destruir(cola, eliminar_entrada_ciudad);
                 exit(0);
                 break;
             default:
