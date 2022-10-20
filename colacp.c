@@ -9,25 +9,25 @@ void swap(TNodo padre, TNodo hijo) {
 }
 
 void heapify(TNodo raiz, int (*comparador)(TEntrada, TEntrada)) {
-    TClave claveRaiz = raiz->entrada->clave;
-    TClave izquierda;
-    TClave derecha;
+    TClave entradaRaiz = raiz->entrada;
+    TEntrada izquierda;
+    TEntrada derecha;
     if (raiz->hijo_izquierdo != NULL) {
-        izquierda = raiz->hijo_izquierdo->entrada->clave;
+        izquierda = raiz->hijo_izquierdo->entrada;
         if (raiz->hijo_derecho != NULL) {
-            derecha = raiz->hijo_derecho->entrada->clave;
+            derecha = raiz->hijo_derecho->entrada;
             if (comparador(izquierda, derecha) == 1) {
-                if (comparador(izquierda, claveRaiz) == 1) {
+                if (comparador(izquierda, entradaRaiz) == 1) {
                     swap(raiz, raiz->hijo_izquierdo);
                     heapify(raiz->hijo_izquierdo, comparador);
                 }
             }
-            else if (comparador(derecha, claveRaiz) == 1) {
+            else if (comparador(derecha, entradaRaiz) == 1) {
                 swap(raiz, raiz->hijo_derecho);
                 heapify(raiz->hijo_derecho, comparador);
             }
         }
-        else if (comparador(izquierda, claveRaiz) == 1) {
+        else if (comparador(izquierda, entradaRaiz) == 1) {
             swap(raiz, raiz->hijo_izquierdo);
             heapify(raiz->hijo_izquierdo, comparador);
         }

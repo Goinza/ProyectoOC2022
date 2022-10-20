@@ -39,9 +39,11 @@ int comparador_invertido(TEntrada e1, TEntrada e2){
 }
 
 float distancia_de_manhattan(int x, int y, TCiudad c){
-    float distancia = ((c->pos_x) - x) + (c->pos_y - y);
-    if (distancia < 0)
-        distancia = distancia * (-1);
+    printf("Ciudad: %s - X: %.0f - Y: %.0f \n", c->nombre, c->pos_x, c->pos_y);
+    int dx = abs(c->pos_x - x);
+    int dy = abs(c->pos_y - y);
+    float distancia = dx + dy;
+
     return distancia;
 }
 
@@ -49,8 +51,10 @@ int main(int argc, char *argv[]) {
     //Declaro variables
     ciudades = (TCiudad *) malloc(sizeof(TCiudad) * 4);
     const char limiter[2] = ";";
-    int x, y;
+    int x, y, aux;
+    int i = 0;
     char * str = (char *) malloc(sizeof(char)*20);
+    char * aux_nombre;
 
     //Decalor variable para la cola
     TColaCP cola;
@@ -73,11 +77,15 @@ int main(int argc, char *argv[]) {
 
     //Leo el resto del archivo que contiene las ciudades y sus posiciones
     while (fgets(str, 20, file) != NULL) {
-        (*ciudades)->nombre = (strtok(str, limiter));
-        (*ciudades)->pos_x = (float) string_a_entero((strtok(NULL, limiter)));
-        (*ciudades)->pos_y = (float) string_a_entero((strtok(NULL, limiter)));
+        ciudades[i] = (TCiudad) malloc(sizeof(struct ciudad));
+        ciudades[i]->nombre = (char *) malloc(sizeof(char)*20);
+        aux_nombre = (strtok(str, limiter));
+        strcpy(ciudades[i]->nombre, aux_nombre);
+        ciudades[i]->pos_x = (float) string_a_entero((strtok(NULL, limiter)));
+        ciudades[i]->pos_y = (float) string_a_entero((strtok(NULL, limiter)));
         //print usado para testeo
-        printf("Ciudad: %s - X: %.0f - Y: %.0f \n", (*ciudades)->nombre, (*ciudades)->pos_x, (*ciudades)->pos_y);
+        printf("Ciudad: %s - X: %.0f - Y: %.0f \n", ciudades[i]->nombre, ciudades[i]->pos_x, ciudades[i]->pos_y);
+        i++;
     }
 
     //Inicio de programa en la pantalla
@@ -89,50 +97,54 @@ int main(int argc, char *argv[]) {
 
     //Leo lo ingresado por el usuario
     scanf("%s", str);
-    x = string_a_entero(str);
-    switch(x) {
+    aux = string_a_entero(str);
+    switch(aux) {
         case 1:{
-            printf("Ascendente");
+            printf("Ascendente\n");
             cola = crear_cola_cp(comparador);
         }
             break;
         case 2:{
-            printf("Descendente");
+            printf("Descendente\n");
             cola = crear_cola_cp(comparador_invertido);
         }
             break;
         case 3:
-            printf("Reducir");
+            printf("Reducir\n");
             cola = crear_cola_cp(comparador);
             break;
         case 4:
-            printf("Salir");
+            printf("Salir\n");
             break;
         default:
-            printf("Error");
+            printf("Error\n");
     }
 
     //Insertar en la cola
+    float * d;
     for (int i = 0; i < 4 ; i++){
-        float d;
-        TEntrada entrada;
-        entrada->clave = &d;
+        d = (float *) malloc(sizeof(float));
+        TEntrada entrada = (TEntrada) malloc(sizeof(struct entrada));
+        entrada->clave = d;
         entrada->valor = *(ciudades + i);
-        if (x == 3){
+        if (aux == 3){
             if (cola->raiz != NULL){
-                float x = ((TCiudad)cola->raiz->entrada->valor)->pos_x;
-                float y = ((TCiudad)cola->raiz->entrada->valor)->pos_y;
+                x = ((TCiudad)cola->raiz->entrada->valor)->pos_x;
+                y = ((TCiudad)cola->raiz->entrada->valor)->pos_y;
             }
         }
-        d = distancia_de_manhattan(x,y, *(ciudades + i));
+        *d = distancia_de_manhattan(x,y, *(ciudades + i));
+        printf("%f\n", *d);
         if (cp_insertar(cola,entrada) == FALSE)
             printf("Ocurrio un error al insertar");
     }
+
     //Mostramos por pantalla el contenido de la cola
-    for (int i = 0; i < cola->cantidad_elementos; i ++){
+    int cantidad = cola->cantidad_elementos;
+    for (int i = 0; i < cantidad; i ++){
         TEntrada entr = cp_eliminar(cola);
         TCiudad ciudad = entr->valor;
-        printf("%d %s",i,ciudad->nombre);
+        printf("%d %s\n",i,ciudad->nombre);
     }
 
     return 0;
