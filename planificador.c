@@ -53,10 +53,10 @@ float distancia_de_manhattan(int x, int y, TCiudad c){
     return distancia;
 }
 
-void mostrar_ordenado(TColaCP cola, int x, int y) {
+void mostrar_ordenado(TColaCP cola, int x, int y, int cant) {
     //Insertar en la cola
     float * d;
-    for (int i = 0; i < 4 ; i++){
+    for (int i = 0; i < cant ; i++){
         d = (float *) malloc(sizeof(float));
         TEntrada entrada = (TEntrada) malloc(sizeof(struct entrada));
         entrada->clave = d;
@@ -90,13 +90,13 @@ int fue_visitada(TCiudad ciudad, TCiudad * visitadas) {
     return visitada;
 }
 
-void mostrar_reducido(TColaCP cola, int x, int y) {
+void mostrar_reducido(TColaCP cola, int x, int y, int cant) {
     //Insertar en la cola
     float * d;
     TCiudad ciudad;
     TEntrada entrada;
     int horas = 0;
-    TCiudad * visitadas = (TCiudad *) malloc(sizeof(TCiudad) * 4);
+    TCiudad * visitadas = (TCiudad *) malloc(sizeof(TCiudad) * cant);
     for (int j= 0; j < 4; j++) {
         for (int i = 0; i < 4 ; i++){
             if (fue_visitada(*(ciudades + i), visitadas) == 0) {
@@ -117,19 +117,48 @@ void mostrar_reducido(TColaCP cola, int x, int y) {
         horas += (int) *d;
         x = (int) ciudad->pos_x;
         y = (int) ciudad->pos_y;
-        printf("%d %s\n", j, ciudad->nombre);
+        printf("%d %s\n", j + 1, ciudad->nombre);
         while (cp_cantidad(cola) > 0) {
             cp_eliminar(cola);
         }
     }
-    printf("Total recorrido: %d", horas);
+    printf("Total recorrido: %d\n", horas);
     free(d);
     free(visitadas);
 }
 
+int contar_lineas(char * arch){
+    FILE * file = fopen(arch,"rb");
+    int cantidad = 0;
+
+    if (file == NULL) {
+        printf("Error. El archivo no existe");
+        exit(-1);
+    }
+
+    while (!feof(file)){
+        if (fgetc(file) == '\n')
+            cantidad++;
+    }
+    fclose(file);
+    return cantidad;
+}
+
 int main(int argc, char *argv[]) {
+
+    int cantidad = contar_lineas(argv[1]);
+
+    //--------------------------------------
+    printf("Cantidad : %d \n" , cantidad);
+    //--------------------------------------
+
+    if (cantidad < 1){
+        printf("El archivo no contiene ciudades");
+        exit(0);
+    }
+
     //Declaro variables
-    ciudades = (TCiudad *) malloc(sizeof(TCiudad) * 4);
+    ciudades = (TCiudad *) malloc(sizeof(TCiudad) * cantidad);
     const char limiter[2] = ";";
     int x, y, aux;
     int i = 0;
@@ -142,10 +171,6 @@ int main(int argc, char *argv[]) {
     //Abro archivo para lectura
     FILE * file;
     file = fopen(argv[1], "r");
-    if (file==NULL) {
-        printf("Error. El archivo no existe");
-        exit(-1);
-    }
 
     //Leo la primera linea con la posicion inicial
     //fscanf(file, "%s", str);
@@ -181,19 +206,17 @@ int main(int argc, char *argv[]) {
         scanf("%s", str);
         aux = string_a_entero(str);
         switch(aux) {
-            case 1:{
+            case 1:
                 cola = crear_cola_cp(comparador);
-                mostrar_ordenado(cola, x, y);
-            }
+                mostrar_ordenado(cola, x, y,cantidad);
                 break;
-            case 2:{
+            case 2:
                 cola = crear_cola_cp(comparador_invertido);
-                mostrar_ordenado(cola, x, y);
-            }
+                mostrar_ordenado(cola, x, y,cantidad);
                 break;
             case 3:
                 cola = crear_cola_cp(comparador);
-                mostrar_reducido(cola, x, y);
+                mostrar_reducido(cola, x, y,cantidad);
                 break;
             case 4:
                 free(ciudades);
