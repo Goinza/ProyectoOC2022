@@ -193,6 +193,7 @@ int main(int argc, char *argv[]) {
         i++;
     }
 
+    fclose(file);
 
     while (TRUE) {
         //Inicio de programa en la pantalla
