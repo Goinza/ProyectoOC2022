@@ -8,6 +8,11 @@ void swap(TNodo padre, TNodo hijo) {
     hijo->entrada = aux;
 }
 
+/*
+Funcion que reordena el arbol para mantener la prioridad correctamente.
+Inicialmente, la raiz es el unico nodo que no cumple con la prioridad,
+y para ordenarlo, se necesita ordenar de forma recursiva a subarboles.
+*/
 void heapify(TNodo raiz, int (*comparador)(TEntrada, TEntrada)) {
     TClave entradaRaiz = raiz->entrada;
     TEntrada izquierda;
@@ -40,20 +45,19 @@ Esta es la funcion que se utiliza para encontrar el ultimo elemento de la cola,
 lo cual es necesario en el proceso de la funcion cp_eliminar
 n es el numero del ultimo nodo que fue agregado a la cola (cantidad_elementos)
 */
-TNodo obtener_ultimo_nodo(TNodo nodo, int n) {
-    /* Find the largest power of two no greater than n. */
+TNodo obtener_ultimo_nodo(TColaCP cola) {
+    TNodo nodo = cola->raiz;
+    int n = cola->cantidad_elementos;
     int bitIndex = 0;
+    //Sumo el indice hasta llegar a la mayor potencia de 2 que sea menor a n
     while (1 << (bitIndex + 1) <= n) {
-        /* See if the next power of two is greater than n. */
         bitIndex++;
     }
 
-    /* Back off the bit index by one.  We're going to use this to find the
-     * path down.
-     */
+    //Descarto el bit mas significativo
     bitIndex--;
 
-    /* Read off the directions to take from the bits of n. */
+    //Se analizan los bits de n para saber que direccion tomar (hijo izquierdo o derecho)
     for (; bitIndex >= 0; bitIndex--) {
         int mask = (1 << bitIndex);
         if (n & mask)
@@ -148,7 +152,7 @@ TEntrada cp_eliminar(TColaCP cola) {
     TNodo ultimo;
 
     if (cola->cantidad_elementos > 1) {
-        ultimo = obtener_ultimo_nodo(cola->raiz, cola->cantidad_elementos);
+        ultimo = obtener_ultimo_nodo(cola);
         swap(cola->raiz, ultimo);
         //Ahora que el elemento a eliminar es el ultimo nodo de la cola, antes de borrarlo hay que eliminar el enlace con su nodo padre
         if (cola->cantidad_elementos % 2 == 1) {

@@ -148,10 +148,6 @@ int main(int argc, char *argv[]) {
 
     int cantidad = contar_lineas(argv[1]);
 
-    //--------------------------------------
-    printf("Cantidad : %d \n" , cantidad);
-    //--------------------------------------
-
     if (cantidad < 1){
         printf("El archivo no contiene ciudades");
         exit(0);
@@ -175,10 +171,8 @@ int main(int argc, char *argv[]) {
     //Leo la primera linea con la posicion inicial
     //fscanf(file, "%s", str);
     fgets(str, 20, file);
-    x = (int) string_a_entero((strtok(str, limiter)));;
-    y = (int) string_a_entero((strtok(NULL, limiter)));;
-    //print usado para testeo
-    printf("X: %d - Y: %d\n", x, y);
+    x = (int) string_a_entero((strtok(str, limiter)));
+    y = (int) string_a_entero((strtok(NULL, limiter)));
 
     //Leo el resto del archivo que contiene las ciudades y sus posiciones
     while (fgets(str, 20, file) != NULL) {
@@ -188,8 +182,6 @@ int main(int argc, char *argv[]) {
         strcpy(ciudades[i]->nombre, aux_nombre);
         ciudades[i]->pos_x = (float) string_a_entero((strtok(NULL, limiter)));
         ciudades[i]->pos_y = (float) string_a_entero((strtok(NULL, limiter)));
-        //print usado para testeo
-        printf("Ciudad: %s - X: %.0f - Y: %.0f \n", ciudades[i]->nombre, ciudades[i]->pos_x, ciudades[i]->pos_y);
         i++;
     }
 
