@@ -14,7 +14,7 @@ Inicialmente, la raiz es el unico nodo que no cumple con la prioridad,
 y para ordenarlo, se necesita ordenar de forma recursiva a subarboles.
 */
 void heapify(TNodo raiz, int (*comparador)(TEntrada, TEntrada)) {
-    TClave entradaRaiz = raiz->entrada;
+    TEntrada entradaRaiz = raiz->entrada;
     TEntrada izquierda;
     TEntrada derecha;
     if (raiz->hijo_izquierdo != NULL) {

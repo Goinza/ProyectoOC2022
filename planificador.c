@@ -97,8 +97,8 @@ void mostrar_reducido(TColaCP cola, int x, int y, int cant) {
     TEntrada entrada;
     int horas = 0;
     TCiudad * visitadas = (TCiudad *) malloc(sizeof(TCiudad) * cant);
-    for (int j= 0; j < 4; j++) {
-        for (int i = 0; i < 4 ; i++){
+    for (int j= 0; j < cant; j++) {
+        for (int i = 0; i < cant; i++){
             if (fue_visitada(*(ciudades + i), visitadas) == 0) {
                 d = (float *) malloc(sizeof(float));
                 entrada = (TEntrada) malloc(sizeof(struct entrada));
