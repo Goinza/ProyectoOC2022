@@ -77,10 +77,10 @@ void mostrar_ordenado(TColaCP cola, int x, int y, int cant) {
 }
 
 //Retorna 1 si ciudad esta en el arreglo visitadas
-int fue_visitada(TCiudad ciudad, TCiudad * visitadas) {
+int fue_visitada(TCiudad ciudad, TCiudad * visitadas, int cantidad) {
     int visitada = 0;
     int i = 0;
-    while (visitada == 0 && i < 4) {
+    while (visitada == 0 && i < cantidad) {
         if (ciudad == visitadas[i]) {
             visitada = 1;
         }
@@ -99,7 +99,7 @@ void mostrar_reducido(TColaCP cola, int x, int y, int cant) {
     TCiudad * visitadas = (TCiudad *) malloc(sizeof(TCiudad) * cant);
     for (int j= 0; j < cant; j++) {
         for (int i = 0; i < cant; i++){
-            if (fue_visitada(*(ciudades + i), visitadas) == 0) {
+            if (fue_visitada(*(ciudades + i), visitadas,j) == 0) {
                 d = (float *) malloc(sizeof(float));
                 entrada = (TEntrada) malloc(sizeof(struct entrada));
                 entrada->clave = d;
