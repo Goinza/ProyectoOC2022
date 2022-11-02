@@ -53,7 +53,7 @@ TCiudad copiar_ciudad(TCiudad ciudad) {
     return copia;
 }
 
-void mostrar_ordenado(TColaCP cola, int x, int y, int cant) {
+void mostrar_ordenado(TColaCP cola, float x, float y, int cant) {
     //Insertar en la cola
     float * d;
     for (int i = 0; i < cant ; i++){
@@ -112,7 +112,7 @@ void mostrar_reducido(TColaCP cola, float x, float y, int cant) {
 
         entrada = cp_eliminar(cola);
         ciudad = (TCiudad) entrada->valor;
-        visitadas[j] = ciudad;
+        visitadas[j] = copiar_ciudad(ciudad);
         d = (float *) entrada->clave;
         horas += *d;
         x = ciudad->pos_x;
@@ -173,8 +173,8 @@ int main(int argc, char *argv[]) {
     //Leo la primera linea con la posicion inicial
     //fscanf(file, "%s", str);
     fgets(str, 20, file);
-    x = atof((strtok(str, limiter)));
-    y = atof((strtok(NULL, limiter)));
+    x = atof(strtok(str, limiter));
+    y = atof(strtok(NULL, limiter));
 
     //Leo el resto del archivo que contiene las ciudades y sus posiciones
     while (fgets(str, 20, file) != NULL) {
@@ -182,8 +182,8 @@ int main(int argc, char *argv[]) {
         ciudades[i]->nombre = (char *) malloc(sizeof(char)*20);
         aux_nombre = (strtok(str, limiter));
         strcpy(ciudades[i]->nombre, aux_nombre);
-        ciudades[i]->pos_x = (float) atof((strtok(NULL, limiter)));
-        ciudades[i]->pos_y = (float) atof((strtok(NULL, limiter)));
+        ciudades[i]->pos_x = atof(strtok(NULL, limiter));
+        ciudades[i]->pos_y = atof(strtok(NULL, limiter));
         i++;
     }
 
