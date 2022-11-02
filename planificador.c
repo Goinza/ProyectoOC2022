@@ -74,6 +74,8 @@ void mostrar_ordenado(TColaCP cola, float x, float y, int cant) {
         printf("%d %s\n",i,ciudad->nombre);
         eliminar_entrada_ciudad(entr);
     }
+
+    cp_destruir(cola, eliminar_entrada_ciudad);
 }
 
 //Retorna 1 si ciudad esta en el arreglo visitadas
@@ -126,6 +128,8 @@ void mostrar_reducido(TColaCP cola, float x, float y, int cant) {
     }
     printf("Total recorrido: %.2f\n", horas);
     free(visitadas);
+
+    cp_destruir(cola, eliminar_entrada_ciudad);
 }
 
 int contar_lineas(char * arch){
@@ -220,8 +224,6 @@ int main(int argc, char *argv[]) {
                 }
                 free(ciudades);
                 free(str);
-                if (cola != NULL)
-                    cp_destruir(cola, eliminar_entrada_ciudad);
                 exit(0);
                 break;
             default:
