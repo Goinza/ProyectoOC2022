@@ -19,15 +19,26 @@ void eliminar_entrada_ciudad(TEntrada entrada) {
 }
 
 //Asumo que el parametro solo contiene caracteres de digitos (y posiblemente un caracter de nueva linea)
+//Como admite negativos, tambien puede contener el caracter '-' al principio de la cadena
 int string_a_entero(char * string) {
     int resultado = 0;
     int digito;
-    for (int i=0; i<strlen(string); i++) {
+    int i = 0;
+    int esNegativo = FALSE;
+    if (string[0] == '-') {
+        i = 1;
+        esNegativo = TRUE;
+    }
+    for (; i<strlen(string); i++) {
         if (string[i] != 10) { //Ignora caracter de nueva linea
             digito = (int)string[i]-48;
             resultado = resultado * 10 + digito;
         }
     }
+    if (esNegativo) {
+        resultado = resultado * (-1);
+    }
+
     return resultado;
 }
 
@@ -72,8 +83,8 @@ void mostrar_ordenado(TColaCP cola, int x, int y, int cant) {
         TEntrada entr = cp_eliminar(cola);
         TCiudad ciudad = entr->valor;
         printf("%d %s\n",i,ciudad->nombre);
+        eliminar_entrada_ciudad(entr);
     }
-    free(d);
 }
 
 //Retorna 1 si ciudad esta en el arreglo visitadas
@@ -118,12 +129,13 @@ void mostrar_reducido(TColaCP cola, int x, int y, int cant) {
         x = (int) ciudad->pos_x;
         y = (int) ciudad->pos_y;
         printf("%d %s\n", j + 1, ciudad->nombre);
+        eliminar_entrada_ciudad(entrada);
         while (cp_cantidad(cola) > 0) {
-            cp_eliminar(cola);
+            entrada = cp_eliminar(cola);
+            eliminar_entrada_ciudad(entrada);
         }
     }
     printf("Total recorrido: %d\n", horas);
-    free(d);
     free(visitadas);
 }
 
