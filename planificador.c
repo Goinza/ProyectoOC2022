@@ -214,6 +214,10 @@ int main(int argc, char *argv[]) {
                 mostrar_reducido(cola, x, y,cantidad);
                 break;
             case 4:
+                for (int i=0; i<cantidad; i++) {
+                    free(ciudades[i]->nombre);
+                    free(ciudades[i]);
+                }
                 free(ciudades);
                 free(str);
                 if (cola != NULL)
