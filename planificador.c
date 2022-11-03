@@ -20,8 +20,8 @@ void eliminar_entrada_ciudad(TEntrada entrada) {
 }
 
 int comparador(TEntrada e1, TEntrada e2){
-    int clave1 = *((int *)e1->clave);
-    int clave2 = *((int *)e2->clave);
+    float clave1 = *((float *)e1->clave);
+    float clave2 = *((float *)e2->clave);
     if (clave1 > clave2)
         return -1;
     if (clave1 < clave2)
@@ -78,13 +78,13 @@ void mostrar_ordenado(TColaCP cola, float x, float y, int cant) {
     cp_destruir(cola, eliminar_entrada_ciudad);
 }
 
-//Retorna 1 si ciudad esta en el arreglo visitadas
+//Retorna TRUE si ciudad esta en el arreglo visitadas
 int fue_visitada(TCiudad ciudad, TCiudad * visitadas, int cantidad) {
-    int visitada = 0;
+    int visitada = FALSE;
     int i = 0;
-    while (visitada == 0 && i < cantidad) {
+    while (visitada == FALSE && i < cantidad) {
         if (strcmp(ciudad->nombre, visitadas[i]->nombre) == 0) {
-            visitada = 1;
+            visitada = TRUE;
         }
         i++;
     }
@@ -101,7 +101,7 @@ void mostrar_reducido(TColaCP cola, float x, float y, int cant) {
     TCiudad * visitadas = (TCiudad *) malloc(sizeof(TCiudad) * cant);
     for (int j= 0; j < cant; j++) {
         for (int i = 0; i < cant; i++){
-            if (fue_visitada(*(ciudades + i), visitadas,j) == 0) {
+            if (fue_visitada(*(ciudades + i), visitadas,j) == FALSE) {
                 d = (float *) malloc(sizeof(float));
                 entrada = (TEntrada) malloc(sizeof(struct entrada));
                 entrada->clave = d;
